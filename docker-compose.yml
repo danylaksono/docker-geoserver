@@ -17,6 +17,8 @@ services:
         - POSTGRES_PASS=${POSTGRES_PASS}
         - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
         - FORCE_SSL=TRUE
+        - POSTGRES_JNDI=TRUE
+        - HOST=${POSTGRES_HOSTNAME}
       restart: on-failure
       healthcheck:
         test: "exit 0"
@@ -35,6 +37,7 @@ services:
         - GEOSERVER_ADMIN_USER=${GEOSERVER_ADMIN_USER}
         - INITIAL_MEMORY=${INITIAL_MEMORY}
         - MAXIMUM_MEMORY=${MAXIMUM_MEMORY}
+        - SSL_MODE=allow
       depends_on:
         db:
           condition: service_healthy
@@ -43,3 +46,17 @@ services:
         interval: 1m30s
         timeout: 10s
         retries: 3
+
+   nginx:
+      image: nginx
+      volumes:
+        - ./sites-enabled:/etc/nginx/conf.d:ro
+      logging:
+        driver: json-file
+        options:
+          max-size: 200m
+          max-file: '10'
+      depends_on:
+        - geoserver
+      ports:
+        - "80:80"
