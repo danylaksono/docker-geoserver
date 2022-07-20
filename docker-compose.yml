@@ -8,7 +8,7 @@ services:
    db:
       image: kartoza/postgis:${POSTGIS_VERSION_TAG}
       volumes:
-        - $HOME/geoserver/geo-db-data:/var/lib/postgresql
+        - geo-db-data:/var/lib/postgresql
       ports:
         - ${POSTGRES_PORT}:5432
       environment:
@@ -26,10 +26,10 @@ services:
    geoserver:
       image: kartoza/geoserver:${GS_VERSION}
       volumes:
-        - $HOME/geoserver/geoserver-data:/opt/geoserver/data_dir
+        - geoserver-data:/opt/geoserver/data_dir
       ports:
         - ${GEOSERVER_PORT}:8080
-        - 8443:8443
+      #  - 8443:8443
       restart: on-failure
       environment:
         - GEOSERVER_DATA_DIR=${GEOSERVER_DATA_DIR}
@@ -38,7 +38,7 @@ services:
         - GEOSERVER_ADMIN_USER=${GEOSERVER_ADMIN_USER}
         - INITIAL_MEMORY=${INITIAL_MEMORY}
         - MAXIMUM_MEMORY=${MAXIMUM_MEMORY}
-        - SSL_MODE=allow
+        # - SSL_MODE=allow
         # - STABLE_EXTENSIONS=${STABLE_EXTENSIONS}
         # - COMMUNITY_EXTENSIONS=${COMMUNITY_EXTENSIONS}
       depends_on:
@@ -49,18 +49,18 @@ services:
         interval: 1m30s
         timeout: 10s
         retries: 3
-
-   nginx:
-      image: nginx
-      volumes:
-        - ./sites-enabled:/etc/nginx/conf.d:ro
-      logging:
-        driver: json-file
-        options:
-          max-size: 200m
-          max-file: '10'
-      depends_on:
-        - geoserver
-      ports:
-        - "80:80"
-        - "443:443"
+  
+   #nginx:
+   #   image: nginx
+   #   volumes:
+   #     - ./sites-enabled:/etc/nginx/conf.d:ro
+   #   logging:
+   #    driver: json-file
+   #     options:
+   #       max-size: 200m
+   #       max-file: '10'
+   #   depends_on:
+   #     - geoserver
+   #   ports:
+   #     - "80:80"
+      # - "443:443"
