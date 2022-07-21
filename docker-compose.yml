@@ -27,7 +27,7 @@ services:
       image: kartoza/geoserver:${GS_VERSION}
       volumes:
         - geoserver-data:/opt/geoserver/data_dir
-        - ${PWD}/settings/tomcat:/usr/local/tomcat/conf/server.xml
+        - ${PWD}/settings/tomcat:/usr/local/tomcat/conf/
       ports:
         - ${GEOSERVER_PORT}:8080
         - 8443:8443
